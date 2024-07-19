@@ -20,7 +20,7 @@ export const sendCourseReferralEmail = async (
   `;
 
   await resend.emails.send({
-    from: "accredian@hostiffy.xyz",
+    from: "Accredian <accredian@hostiffy.xyz>",
     to: recipientEmail,
     subject: `You're Invited to Join ${courseName}!`,
     html: emailContent,

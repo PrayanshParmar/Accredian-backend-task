@@ -25,7 +25,8 @@ const isAuthenticated = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
                 .status(400)
                 .json({ error: "Invalid token, authorization denied." });
         }
-        req.user = verify;
+        console.log(verify);
+        req.userdata = verify;
         return next();
     }
     catch (error) {

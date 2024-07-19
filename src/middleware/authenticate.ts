@@ -21,7 +21,8 @@ export const isAuthenticated = async (
         .status(400)
         .json({ error: "Invalid token, authorization denied." });
     }
-    (req as any).user = verify;
+    console.log(verify);
+    (req as any).userdata = verify;
     return next();
   } catch (error) {
     console.log(error);

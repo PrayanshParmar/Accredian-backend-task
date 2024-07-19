@@ -1,14 +1,13 @@
-import express from 'express';
+import express from "express";
 
-import authentication from './authentication';
-import tasks from './tasks'
-
+import authentication from "./authentication";
+import refer from "./refer";
 
 const router = express.Router();
 
 export default (): express.Router => {
   authentication(router);
-  tasks(router);
+  refer(router);
 
   return router;
 };

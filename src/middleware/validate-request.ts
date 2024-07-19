@@ -39,12 +39,16 @@ const validateRequest = async (
       result = registrationSchema.parse(userInput);
     } else if (req.path === "/api/auth/login") {
       result = loginSchema.parse(userInput);
-    } else if (req.path === "/api/refer/refer-user") (req as any).user = result;
+    } else if (req.path === "/api/refer/refer-friend") {
+      result = referSchema.parse(userInput);
+    }
+    (req as any).user = result;
     return next();
   } catch (error) {
     if (error instanceof ZodError) {
       const validationIssues = error.errors.map((issue) => {
         return {
+          validation: issue.path[0],
           error: issue.message,
         };
       });

@@ -20,6 +20,7 @@ enum Programs {
 }
 model Refer {
   id            String    @id @default(cuid())
+  name           String 
   userId        String  @map("user_id")
   email         String    @unique
   program     Programs    @default(program_in_product_managment)

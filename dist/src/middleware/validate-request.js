@@ -42,14 +42,17 @@ const validateRequest = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
         else if (req.path === "/api/auth/login") {
             result = loginSchema.parse(userInput);
         }
-        else if (req.path === "/api/refer/refer-user")
-            req.user = result;
+        else if (req.path === "/api/refer/refer-friend") {
+            result = exports.referSchema.parse(userInput);
+        }
+        req.user = result;
         return next();
     }
     catch (error) {
         if (error instanceof zod_1.ZodError) {
             const validationIssues = error.errors.map((issue) => {
                 return {
+                    validation: issue.path[0],
                     error: issue.message,
                 };
             });
