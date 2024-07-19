@@ -1,8 +1,9 @@
-import express from "express";
 import "dotenv/config";
-import routes from "./routes";
-import cookieParser from "cookie-parser";
+import cors from "cors";
 import morgan from "morgan";
+import routes from "./routes";
+import express from "express";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 const port = process.env.PORT || 8080;
@@ -12,6 +13,12 @@ app.use(cookieParser());
 
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
+);
+app.use(
+  cors({
+    origin: process.env.FRONT_END_APP,
+    credentials: true,
+  })
 );
 
 app.use("/", routes());

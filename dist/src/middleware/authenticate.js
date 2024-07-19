@@ -15,18 +15,22 @@ const isAuthenticated = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     try {
         const jwtToken = req.cookies["jwt-token"];
         if (!jwtToken) {
-            return res.sendStatus(403);
+            return res
+                .status(400)
+                .json({ error: "No token provided, authorization denied." });
         }
         const verify = (0, jwt_1.verifyJwtToken)(jwtToken);
         if (!verify) {
-            return res.sendStatus(403);
+            return res
+                .status(400)
+                .json({ error: "Invalid token, authorization denied." });
         }
         req.user = verify;
         return next();
     }
     catch (error) {
         console.log(error);
-        return res.sendStatus(400);
+        return res.status(500).json({ error: "Internal Server Error." });
     }
 });
 exports.isAuthenticated = isAuthenticated;

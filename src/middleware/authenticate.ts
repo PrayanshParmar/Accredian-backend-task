@@ -7,21 +7,24 @@ export const isAuthenticated = async (
   next: express.NextFunction
 ) => {
   try {
-    
     const jwtToken = req.cookies["jwt-token"];
-   
+
     if (!jwtToken) {
-      return res.sendStatus(403);
+      return res
+        .status(400)
+        .json({ error: "No token provided, authorization denied." });
     }
     const verify = verifyJwtToken(jwtToken);
-    
+
     if (!verify) {
-      return res.sendStatus(403);
+      return res
+        .status(400)
+        .json({ error: "Invalid token, authorization denied." });
     }
     (req as any).user = verify;
     return next();
   } catch (error) {
     console.log(error);
-    return res.sendStatus(400);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };

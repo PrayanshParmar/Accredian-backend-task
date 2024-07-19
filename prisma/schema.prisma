@@ -12,3 +12,23 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Programs {
+  program_in_product_managment
+  program_in_computer_science
+  program_in_data_science
+}
+model Refer {
+  id            String    @id @default(cuid())
+  userId        String  @map("user_id")
+  email         String    @unique
+  program     Programs    @default(program_in_product_managment)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  refers        Refer[]
+}
+

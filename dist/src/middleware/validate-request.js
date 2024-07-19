@@ -9,70 +9,48 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.referSchema = void 0;
 const zod_1 = require("zod");
 const loginSchema = zod_1.z.object({
-    email: zod_1.z
-        .string({
-        required_error: "Email is required",
-    })
-        .email(),
+    email: zod_1.z.string().email("Email is required"),
     password: zod_1.z
-        .string({
-        required_error: "Password is required",
-    })
-        .min(4, { message: "Password must contain at least 4 characters" }),
+        .string()
+        .min(4, "Mininum 4 character's is required")
+        .max(30, "Password can be upto 30 character's"),
 });
-const registrationSchema = loginSchema.extend({
-    username: zod_1.z
-        .string({
-        required_error: "Username is required",
-    })
-        .min(3, { message: "username must contain at least 3 characters" })
-        .max(20, { message: "username must not exceed 20 characters" })
-        .refine((value) => {
-        // Check for alphanumeric characters, @, +, and -
-        const validRegex = /^[a-zA-Z0-9@+\-]+$/;
-        return validRegex.test(value);
-    }, {
-        message: "Username must only contain alphanumeric characters, @, +, and -",
-    }),
+const registrationSchema = zod_1.z.object({
+    email: zod_1.z.string().email("Email is required"),
     password: zod_1.z
-        .string({
-        required_error: "Password is required",
-    })
-        .min(4, { message: "Password must contain at least 4 characters" })
-        .refine((value) => {
-        const symbolRegex = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/@]/;
-        const numberRegex = /\d/;
-        const uppercaseRegex = /[A-Z]/;
-        const lowercaseRegex = /[a-z]/;
-        return (symbolRegex.test(value) &&
-            numberRegex.test(value) &&
-            uppercaseRegex.test(value) &&
-            lowercaseRegex.test(value));
-    }, {
-        message: "Password must contain symbols, numbers, uppercase, and lowercase characters",
+        .string()
+        .min(4, "Mininum 4 character's is required")
+        .max(30, "Password can be upto 30 character's"),
+});
+exports.referSchema = zod_1.z.object({
+    name: zod_1.z.string().min(3, {
+        message: "Name must be at least 3 characters.",
     }),
+    email: zod_1.z.string().email("Email is required"),
+    programs: zod_1.z.string(),
 });
 const validateRequest = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const userInput = req.body;
     try {
         let result;
-        if (req.path === "/api/v1/register") {
+        if (req.path === "/api/auth/register") {
             result = registrationSchema.parse(userInput);
         }
-        else {
+        else if (req.path === "/api/auth/login") {
             result = loginSchema.parse(userInput);
         }
-        req.user = result;
+        else if (req.path === "/api/refer/refer-user")
+            req.user = result;
         return next();
     }
     catch (error) {
         if (error instanceof zod_1.ZodError) {
             const validationIssues = error.errors.map((issue) => {
                 return {
-                    validation: issue.path[0],
-                    message: issue.message,
+                    error: issue.message,
                 };
             });
             res.status(400).json({ error: validationIssues });

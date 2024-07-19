@@ -2,60 +2,27 @@ import express from "express";
 import { ZodError, z } from "zod";
 
 const loginSchema = z.object({
-  email: z
-    .string({
-      required_error: "Email is required",
-    })
-    .email(),
+  email: z.string().email("Email is required"),
   password: z
-    .string({
-      required_error: "Password is required",
-    })
-    .min(4, { message: "Password must contain at least 4 characters" }),
+    .string()
+    .min(4, "Mininum 4 character's is required")
+    .max(30, "Password can be upto 30 character's"),
 });
 
-const registrationSchema = loginSchema.extend({
-  username: z
-    .string({
-      required_error: "Username is required",
-    })
-    .min(3, { message: "username must contain at least 3 characters" })
-    .max(20, { message: "username must not exceed 20 characters" })
-    .refine(
-      (value) => {
-        // Check for alphanumeric characters, @, +, and -
-        const validRegex = /^[a-zA-Z0-9@+\-]+$/;
-        return validRegex.test(value);
-      },
-      {
-        message:
-          "Username must only contain alphanumeric characters, @, +, and -",
-      }
-    ),
-    password: z
-    .string({
-      required_error: "Password is required",
-    })
-    .min(4, { message: "Password must contain at least 4 characters" })
-    .refine(
-      (value) => {
-        const symbolRegex = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/@]/;
-        const numberRegex = /\d/;
-        const uppercaseRegex = /[A-Z]/;
-        const lowercaseRegex = /[a-z]/;
+const registrationSchema = z.object({
+  email: z.string().email("Email is required"),
+  password: z
+    .string()
+    .min(4, "Mininum 4 character's is required")
+    .max(30, "Password can be upto 30 character's"),
+});
 
-        return (
-          symbolRegex.test(value) &&
-          numberRegex.test(value) &&
-          uppercaseRegex.test(value) &&
-          lowercaseRegex.test(value)
-        );
-      },
-      {
-        message:
-          "Password must contain symbols, numbers, uppercase, and lowercase characters",
-      }
-    ),
+export const referSchema = z.object({
+  name: z.string().min(3, {
+    message: "Name must be at least 3 characters.",
+  }),
+  email: z.string().email("Email is required"),
+  programs: z.string(),
 });
 
 const validateRequest = async (
@@ -68,20 +35,17 @@ const validateRequest = async (
   try {
     let result;
 
-    if (req.path === "/api/v1/register") {
+    if (req.path === "/api/auth/register") {
       result = registrationSchema.parse(userInput);
-    } else {
+    } else if (req.path === "/api/auth/login") {
       result = loginSchema.parse(userInput);
-    }
-
-    (req as any).user = result;
+    } else if (req.path === "/api/refer/refer-user") (req as any).user = result;
     return next();
   } catch (error) {
     if (error instanceof ZodError) {
       const validationIssues = error.errors.map((issue) => {
         return {
-          validation: issue.path[0],
-          message: issue.message,
+          error: issue.message,
         };
       });
 

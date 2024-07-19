@@ -1,11 +1,12 @@
-import express from 'express';
+import express from "express";
 
-import { login, register, logout } from '../controllers/authentication';
-import validateRequest from '../middleware/validate-request';
+import { login, register, logout, verify } from "../controllers/authentication";
+import validateRequest from "../middleware/validate-request";
+import { isAuthenticated } from "../middleware/authenticate";
 
 export default (router: express.Router) => {
-  router.post('/api/v1/register', validateRequest, register);
-  router.post('/api/v1/login',validateRequest, login);
-  router.get('/api/v1/logout', logout);
-
+  router.post("/api/auth/register", validateRequest, register);
+  router.post("/api/auth/login", validateRequest, login);
+  router.post("/api/auth/logout", logout);
+  router.get("/api/auth/verify-token", isAuthenticated, verify);
 };
