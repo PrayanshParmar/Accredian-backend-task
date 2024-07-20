@@ -1,6 +1,4 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { transport } from "./mail-cofig";
 
 export const sendCourseReferralEmail = async (
   recipientName: string,
@@ -19,8 +17,8 @@ export const sendCourseReferralEmail = async (
     <p>Best regards,<br>The Accredian Team</p>
   `;
 
-  await resend.emails.send({
-    from: "Accredian <accredian@hostiffy.xyz>",
+  await transport.sendMail({
+    from: "Accredian <parmarprayansh2@gmail.com>",
     to: recipientEmail,
     subject: `You're Invited to Join ${courseName}!`,
     html: emailContent,
