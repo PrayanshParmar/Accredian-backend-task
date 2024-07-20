@@ -1,6 +1,6 @@
 import express from "express";
 import { db } from "../db/prisma";
-import { sendCourseReferralEmail } from "../lib/mail/mail";
+import { sendCourseReferralEmail } from "../mail/mail";
 
 type user = {
   id: string;

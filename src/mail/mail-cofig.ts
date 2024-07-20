@@ -1,4 +1,4 @@
-import google from "googleapis";
+import { google } from "googleapis"; // Correct import for googleapis
 import nodemailer from "nodemailer";
 
 const client_id = process.env.GOOGLE_MAIL_CLIENT_ID;
@@ -6,7 +6,7 @@ const client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET;
 const client_redirect_url = process.env.GOOGLE_MAIL_REDIRECT_URL;
 const client_refersh_token = process.env.GOOGLE_MAIL_REFERSH_TOKEN;
 
-export const oAuth2Client = new google.Auth.OAuth2Client(
+export const oAuth2Client = new google.auth.OAuth2(
   client_id,
   client_secret,
   client_redirect_url
