@@ -25,8 +25,9 @@ export const login = async (req: express.Request, res: express.Response) => {
       res.cookie("jwt-token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000,
+        path: "/",
       });
       return res.status(200).json({ message: "Logged in succesfully!" });
     }
@@ -69,6 +70,7 @@ export const logout = async (_: express.Request, res: express.Response) => {
       httpOnly: true,
       secure: true,
       sameSite: "none",
+      path: "/",
     });
     return res.status(200).json({ message: "Logged out successfully!" });
   } catch (error) {
