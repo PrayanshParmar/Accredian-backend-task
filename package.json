@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node dist/src/index.js",
     "dev": "tsc-watch --onSuccess \"npm start\"",
-    "build": "yarn --frozen-lockfile install && npx prisma db && npx prisma generate && tsc"
+    "build": "yarn --frozen-lockfile install && tsc"
   },
   "dependencies": {
     "@prisma/client": "^5.17.0",
