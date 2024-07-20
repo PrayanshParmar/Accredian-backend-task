@@ -24,6 +24,7 @@ export const login = async (req: express.Request, res: express.Response) => {
       const token = createJwtToken(user);
       res.cookie("jwt-token", token, {
         httpOnly: true,
+        sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       });
       return res.status(200).json({ message: "Logged in succesfully!" });
@@ -65,6 +66,7 @@ export const logout = async (_: express.Request, res: express.Response) => {
   try {
     res.clearCookie("jwt-token", {
       httpOnly: true,
+      sameSite: "none",
     });
     return res.status(200).json({ message: "Logged out successfully!" });
   } catch (error) {
